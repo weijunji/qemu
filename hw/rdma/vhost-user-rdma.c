@@ -26,7 +26,7 @@
 #include "sysemu/runstate.h"
 
 // FIXME: should read from slave
-#define VHOST_USER_RDMA_NUM_QUEUES 256
+#define VHOST_USER_RDMA_NUM_QUEUES (195) // 2 + 1 + 64 * 2 + 64
 #define VHOST_USER_RDMA_QUEUE_SIZE 512
 
 static const int user_feature_bits[] = {
@@ -34,6 +34,7 @@ static const int user_feature_bits[] = {
     VIRTIO_RING_F_INDIRECT_DESC,
     VIRTIO_RING_F_EVENT_IDX,
     VIRTIO_F_NOTIFY_ON_EMPTY,
+    VIRTIO_NET_F_ROCE,
     VHOST_INVALID_FEATURE_BIT
 };
 
@@ -121,7 +122,7 @@ static int vhost_user_rdma_handle_config_change(struct vhost_dev *dev)
     VHostUserRdma *r = VHOST_USER_RDMA(dev->vdev);
 
     ret = vhost_dev_get_config(dev, (uint8_t *)&r->rdmacfg,
-                               sizeof(struct virtio_rdma_config));
+                               sizeof(struct virtio_net_config));
     if (ret < 0) {
         error_report("get config space failed");
         return -1;
@@ -275,7 +276,7 @@ static void vhost_user_rdma_update_config(VirtIODevice *vdev, uint8_t *config)
 {
     VHostUserRdma *r = VHOST_USER_RDMA(vdev);
 
-    memcpy(config, &r->rdmacfg, sizeof(struct virtio_rdma_config));
+    memcpy(config, &r->rdmacfg, sizeof(struct virtio_net_config));
 }
 
 static void vhost_user_rdma_set_config(VirtIODevice *vdev, const uint8_t *config)
@@ -288,6 +289,8 @@ static uint64_t vhost_user_rdma_get_features(VirtIODevice *vdev,
                                             Error **errp)
 {
     VHostUserRdma *s = VHOST_USER_RDMA(vdev);
+
+    virtio_add_feature(&features, VIRTIO_NET_F_ROCE);
 
     return vhost_get_features(&s->dev, user_feature_bits, features);
 }
@@ -345,8 +348,8 @@ static void vhost_user_rdma_device_realize(DeviceState *dev, Error **errp)
         return;
     }
 
-    virtio_init(vdev, "virtio-rdma", VIRTIO_ID_RDMA,
-                sizeof(struct virtio_rdma_config));
+    virtio_init(vdev, "virtio-rdma", VIRTIO_ID_NET,
+                sizeof(struct virtio_net_config));
 
     r->virtqs = g_new(VirtQueue *, r->num_queues);
 
@@ -373,7 +376,7 @@ reconnect:
     }
 
     ret = vhost_dev_get_config(&r->dev, (uint8_t *)&r->rdmacfg,
-                               sizeof(struct virtio_rdma_config));
+                               sizeof(struct virtio_net_config));
     if (ret < 0) {
         error_report("vhost-user-rdma: get rdma config failed");
         goto reconnect;

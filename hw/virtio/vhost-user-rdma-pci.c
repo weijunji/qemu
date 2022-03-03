@@ -13,7 +13,7 @@
 
 #include "qemu/osdep.h"
 
-#include "standard-headers/rdma/virtio_rdma.h"
+#include "standard-headers/linux/virtio_net.h"
 #include "hw/virtio/virtio.h"
 #include "hw/virtio/vhost-user-rdma.h"
 #include "hw/pci/pci.h"
@@ -67,9 +67,9 @@ static void vhost_user_rdma_pci_class_init(ObjectClass *klass, void *data)
     device_class_set_props(dc, vhost_user_rdma_pci_properties);
     k->realize = vhost_user_rdma_pci_realize;
     pcidev_k->vendor_id = PCI_VENDOR_ID_REDHAT_QUMRANET;
-    pcidev_k->device_id = PCI_DEVICE_ID_VIRTIO_RDMA;
+    pcidev_k->device_id = PCI_DEVICE_ID_VIRTIO_NET;
     pcidev_k->revision = VIRTIO_PCI_ABI_VERSION;
-    pcidev_k->class_id = PCI_CLASS_NETWORK_OTHER;
+    pcidev_k->class_id = PCI_CLASS_NETWORK_ETHERNET;
 }
 
 static void vhost_user_rdma_pci_instance_init(Object *obj)

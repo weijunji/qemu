@@ -13,7 +13,7 @@
 #ifndef VHOST_USER_RDMA_H
 #define VHOST_USER_RDMA_H
 
-#include "standard-headers/rdma/virtio_rdma.h"
+#include "standard-headers/linux/virtio_net.h"
 #include "chardev/char-fe.h"
 #include "hw/virtio/vhost.h"
 #include "hw/virtio/vhost-user.h"
@@ -26,7 +26,7 @@ struct VHostUserRdma {
     VirtIODevice parent_obj;
     CharBackend chardev;
     int32_t bootindex;
-    struct virtio_rdma_config rdmacfg;
+    struct virtio_net_config rdmacfg;
     struct vhost_dev dev;
     VhostUserState vhost_user;
     struct vhost_virtqueue *vhost_vqs;

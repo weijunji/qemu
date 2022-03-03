@@ -57,6 +57,7 @@
 					 * Steering */
 #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
 
+#define VIRTIO_NET_F_ROCE	55	/* Device support roce_v2 */
 #define VIRTIO_NET_F_HASH_REPORT  57	/* Supports hash report */
 #define VIRTIO_NET_F_RSS	  60	/* Supports RSS RX steering */
 #define VIRTIO_NET_F_RSC_EXT	  61	/* extended coalescing info */
@@ -112,6 +113,37 @@ struct virtio_net_config {
 	uint16_t rss_max_indirection_table_length;
 	/* bitmask of supported VIRTIO_NET_RSS_HASH_ types */
 	uint32_t supported_hash_types;
+
+	__virtio32         phys_port_cnt;
+    __virtio64         sys_image_guid;
+    __virtio32         vendor_id;
+    __virtio32         vendor_part_id;
+    __virtio32         hw_ver;
+    __virtio64         max_mr_size;
+    __virtio64         page_size_cap;
+    __virtio32         max_qp;
+    __virtio32         max_qp_wr;
+    __virtio64         device_cap_flags;
+    __virtio32         max_send_sge;
+    __virtio32         max_recv_sge;
+    __virtio32         max_sge_rd;
+    __virtio32         max_cq;
+    __virtio32         max_cqe;
+    __virtio32         max_mr;
+    __virtio32         max_pd;
+    __virtio32         max_qp_rd_atom;
+    __virtio32         max_res_rd_atom;
+    __virtio32         max_qp_init_rd_atom;
+    __virtio32         atomic_cap;
+    __virtio32         max_mw;
+    __virtio32         max_mcast_grp;
+    __virtio32         max_mcast_qp_attach;
+    __virtio32         max_total_mcast_qp_attach;
+    __virtio32         max_ah;
+    __virtio32         max_fast_reg_page_list_len;
+    __virtio32         max_pi_fast_reg_page_list_len;
+    __virtio16         max_pkeys;
+    uint8_t        local_ca_ack_delay;
 } QEMU_PACKED;
 
 /*
